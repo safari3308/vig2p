@@ -84,9 +84,7 @@ def fix_phonemes(
         has_vi_mark = (VI_MARK_RE.search(source_text) is not None) or (source_lower in VI_UNMARKED_WORDS)
 
         preserve_unmarked = preserve_unmarked_vietnamese_onsets
-        if source_lower.startswith("t") and not source_lower.startswith("th"):
-            phonemes = phonemes.replace("t", "d", 1)
-        elif source_lower.startswith("th"):
+        if source_lower.startswith("th"):
             phonemes = phonemes.replace("θ", "t", 1)
         elif source_lower.startswith("tr"):
             phonemes = phonemes.replace("ʧ", "ʈʂ", 1)
