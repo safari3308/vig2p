@@ -73,16 +73,10 @@ VI_UNMARKED_WORDS = {"do", "to", "so", "no", "ta", "va", "ra", "xa", "ma", "cho"
 # 🌟 Bảng tra cứu Phoneme chuẩn cho các từ tiếng Việt không dấu dễ bị nhận nhầm sang tiếng Anh
 UNMARKED_PHONEME_MAP = {
     "tu": "t u 1",
-    "to": "t o 1",
-    "do": "z o 1",   # Tiếng Việt miền Bắc 'd' là âm 'z' (zo/dô)
-    "so": "s o 1",
-    "no": "n o 1",
-    "ta": "t a 1",
-    "va": "v a 1",
-    "ra": "r a 1",
-    "xa": "x a 1",
-    "ma": "m a 1",
-    "cho": "c ɔ 1",
+    "to": "t ɔ 1",
+    "do": "z ɔ 1",
+    "so": "s ɔ 1",
+    "no": "n ɔ 1",
 }
 
 def fix_phonemes(
