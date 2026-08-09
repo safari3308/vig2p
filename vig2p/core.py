@@ -106,7 +106,12 @@ def fix_phonemes(
 
         preserve_unmarked = preserve_unmarked_vietnamese_onsets
         if source_lower.startswith("th"):
-            phonemes = phonemes.replace("θ", "t h", 1)
+            # 1. Nếu G2P xuất ra 'θ' -> đổi thành 't h'
+            if "θ" in phonemes:
+                phonemes = phonemes.replace("θ", "t h", 1)
+            # 2. Nếu G2P xuất ra 't' (dính ở các từ thi..., thiên, thịt...) -> ép thêm 'h' vào sau 't'
+            elif phonemes.startswith("t") and not phonemes.startswith("t h"):
+                phonemes = "t h" + phonemes[1:]
         elif source_lower.startswith("tr"):
             phonemes = phonemes.replace("ʧ", "ʈʂ", 1)
         elif (
