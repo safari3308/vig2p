@@ -69,7 +69,7 @@ def tokenize_text(text: str) -> list[str]:
     text = text.replace("’", "'").replace("‘", "'")
     return TEXT_TOKEN_RE.findall(text)
 
-
+VI_UNMARKED_WORDS = {"do", "to", "so", "no", "ta", "va", "ra", "xa", "ma", "cho"}
 def fix_phonemes(
     phonemes: str,
     source_text: str | None = None,
@@ -81,10 +81,13 @@ def fix_phonemes(
 
     if source_text:
         source_lower = source_text.lower()
-        has_vi_mark = VI_MARK_RE.search(source_text) is not None
+        has_vi_mark = (VI_MARK_RE.search(source_text) is not None) or (source_lower in VI_UNMARKED_WORDS)
+
         preserve_unmarked = preserve_unmarked_vietnamese_onsets
-        if (has_vi_mark or preserve_unmarked) and source_lower.startswith("th"):
-            phonemes = phonemes.replace("t", "θ", 1)
+        if source_lower.startswith("t") and not source_lower.startswith("th"):
+            phonemes = phonemes.replace("t", "d", 1)
+        elif source_lower.startswith("th"):
+            phonemes = phonemes.replace("θ", "t", 1)
         elif source_lower.startswith("tr"):
             phonemes = phonemes.replace("ʧ", "ʈʂ", 1)
         elif (
