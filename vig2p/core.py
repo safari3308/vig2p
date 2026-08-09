@@ -70,6 +70,21 @@ def tokenize_text(text: str) -> list[str]:
     return TEXT_TOKEN_RE.findall(text)
 
 VI_UNMARKED_WORDS = {"do", "to", "so", "no", "ta", "va", "ra", "xa", "ma", "cho"}
+# 🌟 Bảng tra cứu Phoneme chuẩn cho các từ tiếng Việt không dấu dễ bị nhận nhầm sang tiếng Anh
+UNMARKED_PHONEME_MAP = {
+    "tu": "t u 1",
+    "to": "t o 1",
+    "do": "z o 1",   # Tiếng Việt miền Bắc 'd' là âm 'z' (zo/dô)
+    "so": "s o 1",
+    "no": "n o 1",
+    "ta": "t a 1",
+    "va": "v a 1",
+    "ra": "r a 1",
+    "xa": "x a 1",
+    "ma": "m a 1",
+    "cho": "c ɔ 1",
+}
+
 def fix_phonemes(
     phonemes: str,
     source_text: str | None = None,
@@ -81,6 +96,12 @@ def fix_phonemes(
 
     if source_text:
         source_lower = source_text.lower()
+
+        # 🌟 1. Ưu tiên tra bảng Dictionary (O(1) lookup - siêu nhanh và ngắn gọn)
+        if source_lower in UNMARKED_PHONEME_MAP:
+            return UNMARKED_PHONEME_MAP[source_lower]
+
+        # 🌟 2. Xử lý logic chung cho các từ còn lại
         has_vi_mark = (VI_MARK_RE.search(source_text) is not None) or (source_lower in VI_UNMARKED_WORDS)
 
         preserve_unmarked = preserve_unmarked_vietnamese_onsets
