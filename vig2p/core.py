@@ -106,7 +106,7 @@ def fix_phonemes(
 
         preserve_unmarked = preserve_unmarked_vietnamese_onsets
         if source_lower.startswith("th"):
-            phonemes = phonemes.replace("θ", "t", 1)
+            phonemes = phonemes.replace("θ", "t h", 1)
         elif source_lower.startswith("tr"):
             phonemes = phonemes.replace("ʧ", "ʈʂ", 1)
         elif (
