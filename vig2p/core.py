@@ -69,7 +69,16 @@ def tokenize_text(text: str) -> list[str]:
     text = text.replace("’", "'").replace("‘", "'")
     return TEXT_TOKEN_RE.findall(text)
 
-VI_UNMARKED_WORDS = {"do", "to", "so", "no", "ta", "va", "ra", "xa", "ma", "cho"}
+VI_UNMARKED_WORDS = {
+    # Nhóm mặc định
+    "do", "to", "so", "no", "ta", "va", "ra", "xa", "ma", "cho",
+    # Thêm nhóm từ ngắn trùng tiếng Anh
+    "me", "he", "an", "am", "on", "go", "my", "be",
+    "can", "man", "fan", "ban", "van", "tan", "tin", "pin",
+    "bat", "cat", "mat", "bit", "fit", "hit", "cut", "put",
+    # Thêm nhóm từ tiếng Việt phổ biến không dấu
+    "tam", "tui", "tuy", "suy", "sang", "song", "tra", "tri", "tru"
+}
 # 🌟 Bảng tra cứu Phoneme chuẩn cho các từ tiếng Việt không dấu dễ bị nhận nhầm sang tiếng Anh
 UNMARKED_PHONEME_MAP = {
     "tu": "t u 1",
