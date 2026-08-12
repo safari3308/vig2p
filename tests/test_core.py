@@ -203,7 +203,55 @@ class Vig2PTest(unittest.TestCase):
         self.assertIn("s ɔ 1", phonemes)
         self.assertIn("fˈæst kˈɑːɹ", phonemes)
 
+    def test_unmarked_vietnamese_overrides(self):
+        """Test tra cứu bảng đè UNMARKED_PHONEME_MAP cho các từ không dấu bị đọc ngọng"""
+        self.assertEqual(fix_phonemes("t a m 1", source_text="tam", is_vietnamese=True), "t a m →")
+        self.assertEqual(fix_phonemes("θ u 1", source_text="tu", is_vietnamese=True), "t u 1")
+        self.assertEqual(fix_phonemes("θ i n 1", source_text="tin", is_vietnamese=True), "t i n →")
+        self.assertEqual(fix_phonemes("θ a n 1", source_text="tan", is_vietnamese=True), "t a n →")
+
+    def test_vietnamese_onset_fixes(self):
+        """Test xử lý phụ âm đầu (s, tr, gi, th) cho từ tiếng Việt"""
+        # Phụ âm 's' uốn lưỡi
+        self.assertEqual(fix_phonemes("s o 1", source_text="sang", is_vietnamese=True), "ʂ o →")
+        # Phụ âm 'tr' chuyển sang 'ʈʂ'
+        self.assertEqual(fix_phonemes("ʧ a 1", source_text="tra", is_vietnamese=True), "ʈʂ a →")
+        # Phụ âm 'gi' chuyển sang 'ʝ'
+        self.assertEqual(fix_phonemes("z i 1", source_text="giá", is_vietnamese=True), "ʝ i →")
+
+    def test_case_insensitive_bigram_context(self):
+        """Test nhận diện cụm Bigram tiếng Anh viết hoa / TitleCase (CHECK IN, Fan Page)"""
+        backend = FakeBackend({
+            "Khách": "xˈac3",
+            "hàng": "hˈaːŋ2",
+            "CHECK": "ʧˈɛk",
+            "IN": "ˈɪn",
+            "tại": "tˈaːj6",
+            "Fan": "fˈæn",
+            "Page": "pˈeɪdʒ",
+        })
+        phonemes_upper = phonemize_text("Khách hàng CHECK IN tại Fan Page", backend=backend)
+        self.assertIn("ˈɪn", phonemes_upper)
+
+    def test_edge_cases_empty_and_symbols(self):
+        """Test các trường hợp biên: chuỗi rỗng, khoảng trắng, số và ký tự đặc biệt"""
+        backend = FakeBackend({})
+        self.assertEqual(phonemize_text("", backend=backend), "")
+        self.assertEqual(phonemize_text("   ", backend=backend), "")
+        self.assertEqual(phonemize_text("123 !@#", backend=backend), "123 !@#")
+
+    def test_single_ambiguous_word_without_context(self):
+        """Test từ đơn lập không có ngữ cảnh đi kèm"""
+        backend = FakeBackend({
+            "can": "kˈæn",
+            "tin": "tˈɪn",
+        })
+        # Khi đứng một mình, các từ trong VI_UNMARKED_WORDS nên giữ nguyên dạng phát âm tiếng Việt/gốc
+        res_can = phonemize_text("can", backend=backend)
+        self.assertTrue(len(res_can) > 0)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 

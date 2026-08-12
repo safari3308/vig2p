@@ -96,7 +96,7 @@ EN_CONSONANT_CLUSTERS = (
 )
 EN_SUFFIXES = (
     "tion", "sion", "ing", "ment", "able", "ible", "ness", "less",
-    "full", "fully", "ed", "ce", "cy", "ty", "'s", "'t", "'re", "'ve", "'ll", "'d"
+    "full", "fully", "ed", "ce", "cy", "ty", "'s", "'t", "'re", "'ve", "'ll", "'d", "ck"
 )
 UNAMBIGUOUS_EN_WORDS = {
     "the", "and", "is", "are", "you", "they", "we", "he", "she", "it",
@@ -110,7 +110,8 @@ UNAMBIGUOUS_EN_WORDS = {
     "app", "test", "build", "code", "dev", "bug", "log", "start", "stop",
     "click", "run", "set", "get", "post", "delete", "data", "file", "page",
     "site", "web", "server", "system", "service", "status", "error", "team",
-    "style", "travel", "giant", "budget", "panic", "slow", "fast", "easy"
+    "style", "travel", "giant", "budget", "panic", "slow", "fast", "easy",
+    "check", "in", "fan", "page"
 }
 SENTENCE_STOP_PUNCT = {".", "!", "?", ";", ":"}
 
@@ -121,9 +122,9 @@ DEFINITE_VI_UNMARKED_WORDS = {
 }
 SHARED_AMBIGUOUS_WORDS = {
     "do", "to", "so", "no", "me", "he", "an", "am", "on", "go", "my", "be",
-    "can", "man", "fan", "ban", "van", "tan", "tin", "pin",
+    "can", "man", "ban", "van", "tan", "tin", "pin",
     "bat", "cat", "mat", "bit", "fit", "hit", "cut", "put",
-    "in", "at", "it", "is", "or", "if", "us", "up"
+    "at", "it", "is", "or", "if", "us", "up"
 }
 
 
@@ -201,7 +202,15 @@ def classify_token_languages(tokens: list[str]) -> list[str | None]:
         elif min_en < min_vi:
             final_langs[i] = "en"
         else:
-            if left_vi_dist < 999 or right_vi_dist < 999:
+            if left_en_dist < left_vi_dist:
+                final_langs[i] = "en"
+            elif left_vi_dist < left_en_dist:
+                final_langs[i] = "vi"
+            elif right_en_dist < right_vi_dist:
+                final_langs[i] = "en"
+            elif right_vi_dist < right_en_dist:
+                final_langs[i] = "vi"
+            elif left_vi_dist < 999 or right_vi_dist < 999:
                 final_langs[i] = "vi"
             elif left_en_dist < 999 or right_en_dist < 999:
                 final_langs[i] = "en"
