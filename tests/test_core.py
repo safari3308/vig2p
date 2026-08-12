@@ -60,7 +60,7 @@ class Vig2PTest(unittest.TestCase):
 
         cases = {
             "tường": "tˈyə↘ŋ",
-            "thường": "θˈyə↘ŋ",
+            "thường": "t hˈyə↘ŋ",
             "trước": "ʈʂˈyə↗c",
             "chước": "ʧˈyə↗c",
             "số": "ʂˈo↗",
@@ -72,7 +72,7 @@ class Vig2PTest(unittest.TestCase):
             "style": "stˈaɪl",
             "travel": "tɹˈævəl",
             "giant": "dʒˈaɪənt",
-            "tường nhà khách. thường nhà khách.": "tˈyə↘ŋ ɲˈaː↘ xˈæ↗c. θˈyə↘ŋ ɲˈaː↘ xˈæ↗c.",
+            "tường nhà khách. thường nhà khách.": "tˈyə↘ŋ ɲˈaː↘ xˈæ↗c. t hˈyə↘ŋ ɲˈaː↘ xˈæ↗c.",
         }
 
         for text, expected in cases.items():
@@ -111,9 +111,9 @@ class Vig2PTest(unittest.TestCase):
         backend = FakeBackend({"tường": "t̪ˈyə2ŋ", "thường": "tˈyə2ŋ", "teo": "t̪ˈɛw", "theo": "tˈɛw"})
 
         self.assertEqual(phonemize_text("tường", backend=backend), "tˈyə↘ŋ")
-        self.assertEqual(phonemize_text("thường", backend=backend), "θˈyə↘ŋ")
+        self.assertEqual(phonemize_text("thường", backend=backend), "t hˈyə↘ŋ")
         self.assertEqual(phonemize_text("teo", backend=backend), "tˈɛw")
-        self.assertEqual(phonemize_text("theo", backend=backend), "θˈɛw")
+        self.assertEqual(phonemize_text("theo", backend=backend), "t hˈɛw")
 
     def test_text_aware_tr_and_ch_contrast(self):
         backend = FakeBackend({"trước": "tʃˈyə3c", "chước": "tʃˈyə3c"})
@@ -165,8 +165,45 @@ class Vig2PTest(unittest.TestCase):
         self.assertNotIn("/", phonemes)
         self.assertNotIn("&", phonemes)
         self.assertIn("—", phonemes)
-        self.assertIn("θˈyə↘ŋ", phonemes)
+        self.assertIn("t hˈyə↘ŋ", phonemes)
+
+    def test_context_aware_ambiguous_words_vietnamese(self):
+        backend = FakeBackend({
+            "Tôi": "tˈoj1",
+            "đi": "dˈi1",
+            "to": "tˈo1",
+            "cho": "ʧˈɔ1",
+            "no": "nˈɔ1",
+        })
+        phonemes = phonemize_text("Tôi đi to cho no", backend=backend)
+        self.assertEqual(phonemes, "tˈoj→ dˈi→ t ɔ 1 ʧˈɔ→ n ɔ 1")
+
+    def test_context_aware_ambiguous_words_english(self):
+        backend = FakeBackend({
+            "Don't": "dˈoʊnt",
+            "go": "ɡˈoʊ",
+            "to": "tˈuː",
+            "school": "skˈuːl",
+        })
+        phonemes = phonemize_text("Don't go to school", backend=backend)
+        self.assertEqual(phonemes, "dˈoʊnt ɡˈoʊ tˈuː skˈuːl")
+
+    def test_context_aware_mixed_sentence(self):
+        backend = FakeBackend({
+            "Anh": "ˈaɲ1",
+            "ấy": "ˈəj3",
+            "so": "sˈɔ1",
+            "sánh": "sˈaɲ3",
+            "với": "vˈəj3",
+            "fast": "fˈæst",
+            "car": "kˈɑːɹ",
+        })
+        phonemes = phonemize_text("Anh ấy so sánh với fast car", backend=backend)
+        # 'so' is surrounded by VI words ('ấy' and 'sánh') -> resolved as VI ('s ɔ 1')
+        self.assertIn("s ɔ 1", phonemes)
+        self.assertIn("fˈæst kˈɑːɹ", phonemes)
 
 
 if __name__ == "__main__":
     unittest.main()
+
