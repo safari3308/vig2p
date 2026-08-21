@@ -81,14 +81,14 @@ VI_UNMARKED_WORDS = {
 }
 # 🌟 Phoneme lookup table for Vietnamese words without marks that are easily confused with English
 UNMARKED_PHONEME_MAP = {
-    "tu": "t u 1",
-    "to": "t ɔ 1",
-    "do": "z ɔ 1",
-    "so": "s ɔ 1",
-    "no": "n ɔ 1",
-    "tam": "t a m →",
-    "tin": "tin→",
-    "tan": "t a n →",
+    "tu": "tu",
+    "to": "tɔ",
+    "do": "zɔ",
+    "so": "sɔ",
+    "no": "nɔ",
+    "tam": "ta:m",
+    "tin": "tin",
+    "tan": "ta:n",
 }
 
 EN_ONLY_CHARS = set("fjwz")
@@ -121,7 +121,7 @@ SENTENCE_STOP_PUNCT = {".", "!", "?", ";", ":"}
 
 DEFINITE_VI_UNMARKED_WORDS = {
     "ta", "va", "ra", "xa", "ma", "cho", "tam", "tui", "tuy", "suy",
-    "sang", "song", "tra", "tri", "tru"
+    "sang", "song", "tra", "tri", "tru", "tin", "tan"
 }
 SHARED_AMBIGUOUS_WORDS = {
     "do", "to", "so", "no", "me", "he", "an", "am", "on", "go", "my", "be",
