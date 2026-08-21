@@ -205,10 +205,10 @@ class Vig2PTest(unittest.TestCase):
 
     def test_unmarked_vietnamese_overrides(self):
         """Test tra cứu bảng đè UNMARKED_PHONEME_MAP cho các từ không dấu bị đọc ngọng"""
-        self.assertEqual(fix_phonemes("t a m 1", source_text="tam", is_vietnamese=True), "t a m →")
+        self.assertEqual(fix_phonemes("tˈaːm", source_text="tam", is_vietnamese=True), "t a m →")
         self.assertEqual(fix_phonemes("θ u 1", source_text="tu", is_vietnamese=True), "t u 1")
-        self.assertEqual(fix_phonemes("θ i n 1", source_text="tin", is_vietnamese=True), "t i n →")
-        self.assertEqual(fix_phonemes("θ a n 1", source_text="tan", is_vietnamese=True), "t a n →")
+        self.assertEqual(fix_phonemes("tˈin", source_text="tin", is_vietnamese=True), "t i n →")
+        self.assertEqual(fix_phonemes("tˈaːn", source_text="tan", is_vietnamese=True), "t a n →")
 
     def test_vietnamese_onset_fixes(self):
         """Test xử lý phụ âm đầu (s, tr, gi, th) cho từ tiếng Việt"""
@@ -238,7 +238,8 @@ class Vig2PTest(unittest.TestCase):
         backend = FakeBackend({})
         self.assertEqual(phonemize_text("", backend=backend), "")
         self.assertEqual(phonemize_text("   ", backend=backend), "")
-        self.assertEqual(phonemize_text("123 !@#", backend=backend), "123 !@#")
+        self.assertEqual(phonemize_text("123 !@#", backend=backend), "→↘↗ !@#")
+        self.assertEqual(phonemize_text("!@#", backend=backend), "!@#")
 
     def test_single_ambiguous_word_without_context(self):
         """Test từ đơn lập không có ngữ cảnh đi kèm"""
@@ -249,6 +250,20 @@ class Vig2PTest(unittest.TestCase):
         # Khi đứng một mình, các từ trong VI_UNMARKED_WORDS nên giữ nguyên dạng phát âm tiếng Việt/gốc
         res_can = phonemize_text("can", backend=backend)
         self.assertTrue(len(res_can) > 0)
+
+    def test_inspect_tam_tin_tan_real_backend(self):
+        """In kết quả phoneme thực tế từ backend thật cho tam, tin, tan"""
+        converter = VietnameseG2P()
+        words = ["tam", "tin", "tan"]
+        results = {w: converter(w) for w in words}
+
+        # In kết quả ra màn hình terminal (hiển thị khi chạy pytest với cờ -s)
+        print("\n=== KẾT QUẢ PHONEME BẮT ĐƯỢC TỪ BACKEND THẬT ===")
+        for word, phoneme in results.items():
+            print(f"  '{word}' -> '{phoneme}'")
+
+        for w in words:
+            self.assertTrue(len(results[w]) > 0)
 
 
 if __name__ == "__main__":

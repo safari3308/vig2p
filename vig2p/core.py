@@ -86,6 +86,9 @@ UNMARKED_PHONEME_MAP = {
     "do": "z ɔ 1",
     "so": "s ɔ 1",
     "no": "n ɔ 1",
+    "tam": "t a m →",
+    "tin": "t i n →",
+    "tan": "t a n →",
 }
 
 EN_ONLY_CHARS = set("fjwz")
