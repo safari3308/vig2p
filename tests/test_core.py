@@ -207,7 +207,7 @@ class Vig2PTest(unittest.TestCase):
         """Test tra cứu bảng đè UNMARKED_PHONEME_MAP cho các từ không dấu bị đọc ngọng"""
         self.assertEqual(fix_phonemes("tˈaːm", source_text="tam", is_vietnamese=True), "t a m →")
         self.assertEqual(fix_phonemes("θ u 1", source_text="tu", is_vietnamese=True), "t u 1")
-        self.assertEqual(fix_phonemes("tˈin", source_text="tin", is_vietnamese=True), "t i n →")
+        self.assertEqual(fix_phonemes("tˈin", source_text="tin", is_vietnamese=True), "tin→")
         self.assertEqual(fix_phonemes("tˈaːn", source_text="tan", is_vietnamese=True), "t a n →")
 
     def test_vietnamese_onset_fixes(self):

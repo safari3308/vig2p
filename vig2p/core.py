@@ -87,7 +87,7 @@ UNMARKED_PHONEME_MAP = {
     "so": "s ɔ 1",
     "no": "n ɔ 1",
     "tam": "t a m →",
-    "tin": "t i n →",
+    "tin": "tin→",
     "tan": "t a n →",
 }
 
